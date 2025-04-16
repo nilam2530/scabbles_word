@@ -1,4 +1,6 @@
 
+import 'package:go_router/go_router.dart';
+import 'package:scabbles_word/src/routing/route_config.dart';
 import 'package:scabbles_word/src/screenns/game/data/data_source/tile_data_source.dart';
 import 'package:scabbles_word/src/screenns/game/data/repo/tile_repo_impl.dart';
 import 'package:scabbles_word/src/screenns/game/domane/repo/tile_rack_repo.dart';
@@ -31,4 +33,7 @@ void setupLocator() {
     () => TileRackCubit(getIt<TileRackUseCase>(), getIt<RemoveTileUsecase>()),
   );
   getIt.registerSingleton<LettersCubit>(LettersCubit(letters));
+  getIt.registerSingleton<AppRouter>(AppRouter());
+  getIt.registerSingleton<GoRouter>(getIt<AppRouter>().goRouter);
+
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:scabbles_word/src/routing/route_config.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scabbles_word/src/screenns/game/domane/usecase/board_usecase.dart';
 import 'package:scabbles_word/src/screenns/game/presentation/screen/game_bord/bloc/game_event.dart';
 import 'package:scabbles_word/src/services/injection_container.dart';
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routes = GetIt.I<AppRouter>().goRouter;
+    final routes = GetIt.I<GoRouter>();
     var size = MediaQuery.of(context).size;
 
     return MultiBlocProvider(
