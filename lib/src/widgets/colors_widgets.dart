@@ -1,4 +1,4 @@
-import 'package:scabbles_word/src/screenns/game/domane/entities/board_tile_entitie.dart';
+import 'package:scabbles_word/src/screen/game/domane/entities/board_tile_entitie.dart';
 import 'package:flutter/material.dart';
 
 
