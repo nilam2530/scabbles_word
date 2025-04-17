@@ -3,12 +3,13 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scabbles_word/src/screenns/game/domane/usecase/board_usecase.dart';
-import 'package:scabbles_word/src/screenns/game/presentation/screen/game_bord/bloc/game_event.dart';
+import 'package:scabbles_word/src/routing/route_config.dart';
+import 'package:scabbles_word/src/screen/game/domane/usecase/board_usecase.dart';
+import 'package:scabbles_word/src/screen/game/presentation/game_bord/bloc/game_event.dart';
 import 'package:scabbles_word/src/services/injection_container.dart';
 import 'package:scabbles_word/src/themes/theme_provider.dart';
-import 'package:scabbles_word/src/screenns/game/presentation/screen/game_bord/bloc/game_bloc.dart';
-import 'package:scabbles_word/src/screenns/game/presentation/cubit/radom_tile_cubit.dart';
+import 'package:scabbles_word/src/screen/game/presentation/game_bord/bloc/game_bloc.dart';
+import 'package:scabbles_word/src/screen/game/presentation/game_bord/cubit/radom_tile_cubit.dart';
 import 'package:scabbles_word/src/utils/cubit/letters_cubit.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final routes = getIt<GoRouter>();
     final routes = GetIt.I<GoRouter>();
+
+
     var size = MediaQuery.of(context).size;
 
     return MultiBlocProvider(

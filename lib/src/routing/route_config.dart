@@ -1,6 +1,6 @@
 import 'package:scabbles_word/src/routing/not_found_screen.dart';
 import 'package:scabbles_word/src/routing/route_names.dart';
-import 'package:scabbles_word/src/screenns/game/presentation/screen/game_bord/ui/main_layout.dart';
+import 'package:scabbles_word/src/screen/game/presentation/game_bord/ui/main_layout.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
