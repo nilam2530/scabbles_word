@@ -5,5 +5,5 @@ import 'package:flutter/material.dart';
 Color tileColor(BoardTile tile) {
   if (tile.isOccupied) return Colors.yellow;
   if (tile.isCenter) return Colors.blue;
-  return Colors.grey;
+  return Colors.white;
 }

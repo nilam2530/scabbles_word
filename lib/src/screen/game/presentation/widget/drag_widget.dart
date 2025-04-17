@@ -15,6 +15,7 @@ Widget dragWidget(
       height: 50,
       alignment: Alignment.center,
       decoration: BoxDecoration(
+        image: DecorationImage(image: AssetImage("assets/images/color.jpg")),
         color: Colors.amber,
         borderRadius: BorderRadius.circular(5),
       ),
