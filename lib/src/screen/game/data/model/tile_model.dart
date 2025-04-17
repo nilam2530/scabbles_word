@@ -6,6 +6,6 @@ class TileModel extends Tile {
     required super.kana,
     required super.points,
     required super.diacritics,
-    required super.romaji,
+    required super.romaji, required super.id,
   });
 }

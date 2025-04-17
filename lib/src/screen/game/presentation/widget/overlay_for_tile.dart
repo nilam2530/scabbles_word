@@ -83,10 +83,6 @@ class _OverlayDemoState extends State<OverlayDemo> {
         child: ElevatedButton(
           onPressed: () {
             _showOverlay(context);
-            // Future.delayed(
-            //   Duration(seconds: 2),
-            //   _removeOverlay,
-            // ); // Auto-remove after 2 seconds
           },
           child: Text(textvalue),
         ),
@@ -94,3 +90,111 @@ class _OverlayDemoState extends State<OverlayDemo> {
     );
   }
 }
+
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'overlay_bloc.dart';
+// import 'overlay_event.dart';
+// import 'overlay_state.dart';
+
+// class OverlayDemo extends StatelessWidget {
+//   const OverlayDemo({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (_) => OverlayBloc(),
+//       child: const OverlayView(),
+//     );
+//   }
+// }
+
+// class OverlayView extends StatefulWidget {
+//   const OverlayView({super.key});
+
+//   @override
+//   State<OverlayView> createState() => _OverlayViewState();
+// }
+
+// class _OverlayViewState extends State<OverlayView> {
+//   OverlayEntry? _overlayEntry;
+
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+//     context.read<OverlayBloc>().stream.listen((state) {
+//       if (state.isOverlayVisible && _overlayEntry == null) {
+//         _showOverlay(context);
+//       } else if (!state.isOverlayVisible && _overlayEntry != null) {
+//         _removeOverlay();
+//       }
+//     });
+//   }
+
+//   void _showOverlay(BuildContext context) {
+//     final bloc = context.read<OverlayBloc>();
+
+//     _overlayEntry = OverlayEntry(
+//       builder: (context) => Positioned(
+//         top: 100,
+//         left: 50,
+//         child: Material(
+//           color: Colors.transparent,
+//           child: Container(
+//             padding: const EdgeInsets.all(10),
+//             decoration: BoxDecoration(
+//               color: const Color(0xffFFFDD0),
+//               borderRadius: BorderRadius.circular(8),
+//             ),
+//             child: Row(
+//               children: [
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     bloc.add(ChangeTextValue());
+//                   },
+//                   child: const Text('A'),
+//                 ),
+//                 const SizedBox(width: 10),
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     bloc.add(ChangeTextValue());
+//                   },
+//                   child: const Text('A'),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+
+//     Overlay.of(context).insert(_overlayEntry!);
+//   }
+
+//   void _removeOverlay() {
+//     _overlayEntry?.remove();
+//     _overlayEntry = null;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Center(
+//         child: BlocBuilder<OverlayBloc, OverlayState>(
+//           builder: (context, state) {
+//             return ElevatedButton(
+//               onPressed: () {
+//                 context.read<OverlayBloc>().add(ShowOverlay());
+//               },
+//               child: Text(state.textValue),
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }

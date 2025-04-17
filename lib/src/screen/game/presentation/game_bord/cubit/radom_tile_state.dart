@@ -1,6 +1,5 @@
 part of 'radom_tile_cubit.dart';
 
-@immutable
 sealed class TileRackState {}
 
 final class TileRackInitial extends TileRackState {}
