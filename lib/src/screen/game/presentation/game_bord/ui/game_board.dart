@@ -206,7 +206,7 @@ class DragDropGame extends StatelessWidget {
                                           context.read<BoardBloc>().add(
                                             HoverTile(index),
                                           );
-                                          log(index.toString());
+                                          // log(index.toString());
                                           return true;
                                         }
                                         return false;
@@ -216,16 +216,29 @@ class DragDropGame extends StatelessWidget {
                                           UnhoverTile(index),
                                         );
                                       },
-
-                                      // Use onAcceptWithDetails instead of onAccept
                                       onAcceptWithDetails: (details) {
-                                        final tile =
-                                            details
-                                                .data; // Access the dragged data from the details
+                                        final tile = details.data;
+
+                                        final isFirstMove =
+                                            state.board.isFirstMove();
+
+                                        if (isFirstMove && index != 112) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'First tile must be placed in the center',
+                                              ),
+                                            ),
+                                          );
+                                          return;
+                                        }
 
                                         context.read<BoardBloc>().add(
                                           PlaceTile(index: index, tile: tile),
                                         );
+
                                         GetIt.I<TileRackCubit>().onTileRemove(
                                           tile,
                                         );
@@ -404,135 +417,3 @@ class DragDropGame extends StatelessWidget {
     );
   }
 }
-
-// class DragDropGame extends StatefulWidget {
-//   const DragDropGame({super.key});
-
-//   @override
-//   State<DragDropGame> createState() => _DragDropGameState();
-// }
-
-// class _DragDropGameState extends State<DragDropGame> {
-//   final int gridSize = 15;
-//   final TransformationController transformationController = TransformationController();
-//   OverlayEntry? _overlayEntry;
-
-//   @override
-//   void didChangeDependencies() {
-//     super.didChangeDependencies();
-//     final cubit = context.read<TileRackCubit>();
-
-//     cubit.stream.listen((state) {
-//       if (state is TileRackLoaded) {
-//         if (state.isOverlayVisible && cubit.overlayPosition != null) {
-//           _showOverlay(context, cubit.overlayPosition!);
-//         } else {
-//           _removeOverlay();
-//         }
-//       }
-//     });
-//   }
-
-//   void _showOverlay(BuildContext context, Offset position) {
-//     _removeOverlay();
-
-//     _overlayEntry = OverlayEntry(
-//       builder: (context) => Positioned(
-//         top: position.dy,
-//         left: position.dx,
-//         child: Material(
-//           color: Colors.transparent,
-//           child: Container(
-//             padding: EdgeInsets.all(10),
-//             decoration: BoxDecoration(
-//               color: Color(0xffFFFDD0),
-//               borderRadius: BorderRadius.circular(8),
-//             ),
-//             child: Row(
-//               children: [
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     log('A pressed');
-//                     context.read<TileRackCubit>().dismissOverlay();
-//                   },
-//                   child: Text('A'),
-//                 ),
-//                 SizedBox(width: 10),
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     log('B pressed');
-//                     context.read<TileRackCubit>().dismissOverlay();
-//                   },
-//                   child: Text('B'),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-
-//     Overlay.of(context).insert(_overlayEntry!);
-//   }
-
-//   void _removeOverlay() {
-//     _overlayEntry?.remove();
-//     _overlayEntry = null;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Bingo kana'), centerTitle: true),
-//       body: Padding(
-//         padding: const EdgeInsets.all(10.0),
-//         child: SingleChildScrollView(
-//           child: Column(
-//             children: [
-//               BlocBuilder<TileRackCubit, TileRackState>(
-//                 builder: (context, state) {
-//                   if (state is TileRackLoading) return CircularProgressIndicator();
-//                   if (state is TileRackLoaded) {
-//                     return Wrap(
-//                       spacing: 5,
-//                       children: state.tileRack.map((tile) {
-//                         return GestureDetector(
-//                           onTapDown: (details) {
-//                             final tapPosition = details.globalPosition;
-//                             context.read<TileRackCubit>().requestOverlayAt(tapPosition);
-//                           },
-//                           child: Draggable<Tile>(
-//                             data: tile,
-//                             feedback: dragWidget(
-//                               tile,
-//                               0.5,
-//                               usinngAsfeedback: true,
-//                               fontsize: 26,
-//                               letterPadding: 10,
-//                             ),
-//                             childWhenDragging: SizedBox.shrink(),
-//                             child: dragWidget(tile, 1.0),
-//                           ),
-//                         );
-//                       }).toList(),
-//                     );
-//                   }
-//                   if (state is TileRackError) {
-//                     return Container(
-//                       height: 120,
-//                       color: Colors.red,
-//                       child: Text(state.error),
-//                     );
-//                   }
-//                   return Container(width: 20, height: 20, color: Colors.green);
-//                 },
-//               ),
-//               SizedBox(height: 20),
-//               // BOARD GRID RENDERING SKIPPED FOR BREVITY — KEEP YOURS HERE
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
