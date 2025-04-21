@@ -8,7 +8,8 @@ void tileBag({context, letters}) {
     builder: (context) {
       // Total remaining tiles
 
-      return SizedBox(
+      return Container(
+
         width: double.maxFinite,
         height: MediaQuery.of(context).size.height * 0.8,
         child: Padding(
@@ -22,54 +23,63 @@ void tileBag({context, letters}) {
               Divider(),
 
               Expanded(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 6,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 3,
-                    childAspectRatio: 1.5,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.60), // subtle white overlay
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/back.jpg"),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  itemCount: letters.length,
-                  itemBuilder: (context, index) {
-                    String letter = letters.keys.elementAt(index);
-                    int count = letters[letter]![2];
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 6,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 3,
+                      childAspectRatio: 1.5,
+                    ),
+                    itemCount: letters.length,
+                    itemBuilder: (context, index) {
+                      String letter = letters.keys.elementAt(index);
+                      int count = letters[letter]![2];
 
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color:
-                                count > 0
-                                    ? Colors.amber[300]
-                                    : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Center(
-                            child: Text(
-                              letter,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                                color: Colors.black,
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color:
+                                  count > 0
+                                      ? Colors.amber[300]
+                                      : Colors.grey[300],
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            child: Center(
+                              child: Text(
+                                letter,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          count.toString(),
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: count > 0 ? Colors.black : Colors.grey,
+                          SizedBox(width: 5),
+                          Text(
+                            count.toString(),
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: count > 0 ? Colors.black : Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

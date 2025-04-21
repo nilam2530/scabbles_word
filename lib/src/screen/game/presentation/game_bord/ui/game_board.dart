@@ -30,7 +30,7 @@ class DragDropGame extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.85), // subtle white overlay
+            color: Colors.white.withOpacity(0.60), // subtle white overlay
             image: DecorationImage(
               image: AssetImage("assets/images/back.jpg"),
               fit: BoxFit.cover,
@@ -42,34 +42,10 @@ class DragDropGame extends StatelessWidget {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            title: Text('Bingo kana'),
+            backgroundColor: Colors.orange,
+            title: Text('Bingo kana',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
             centerTitle: true,
             actions: [
-              GestureDetector(
-                onTap: () {
-                  tileBag(context: context, letters: letters);
-                },
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurpleAccent,
-                    shape: BoxShape.circle,
-                    // borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${context.watch<LettersCubit>().totalTilesLeft}',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
           body: Padding(
@@ -311,15 +287,38 @@ class DragDropGame extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.orange, Colors.deepOrangeAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child:
                   AnimatedButton(
-                    height: 70,
-                    width: 200,
+                    height: 50,
+                    width: 100,
                     text: 'SUBMIT',
+                    textStyle: TextStyle(color: Colors.orange,fontSize: 18,fontWeight:  FontWeight.bold),
                     isReverse: true,
-                    selectedTextColor: Colors.black,
+                    selectedTextColor: Colors.orange,
                     transitionType: TransitionType.CENTER_ROUNDER,
-                    backgroundColor: Colors.black,
-                    borderColor: Colors.yellow,
+                    backgroundColor: Colors.white,
+                    borderColor: Colors.transparent,
                     borderRadius: 50,
                     borderWidth: 2,
                     onPress: () async {
@@ -344,8 +343,8 @@ class DragDropGame extends StatelessWidget {
 
                       while (tileRackCubit.state is TileRackLoaded &&
                           (tileRackCubit.state as TileRackLoaded)
-                                  .tileRack
-                                  .length <
+                              .tileRack
+                              .length <
                               7 &&
                           lettersCubit.totalTilesLeft > 0) {
                         await tileRackCubit.refillUntilSeven(
@@ -360,11 +359,47 @@ class DragDropGame extends StatelessWidget {
                       // Navigator.push(...)
                     },
                   ),
-                ],
-              ),
+
+                ),
+                SizedBox(width: 16),
+                SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.zero,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      tileBag(context: context,letters: letters);
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        ClipOval(
+                          child: Image.asset(
+                            'assets/images/money-bag.png',
+                            fit: BoxFit.cover,
+                            width: 60,
+                            height: 60,
+                            color: Colors.white,
+                          ),
+                        ),
+                       Positioned(
+                         top: 25,
+                           child:
+                       Text('${context.watch<LettersCubit>().totalTilesLeft}',style: TextStyle(color: Colors.orange,fontWeight:  FontWeight.bold,fontSize: 18),))
+
+
+                                            ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ),
+          ),        ),
       ],
     );
   }
