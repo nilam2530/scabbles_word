@@ -4,6 +4,7 @@ import 'package:scabbles_word/src/screen/game/domane/entities/tile_entitie.dart'
 import 'package:scabbles_word/src/screen/game/presentation/widget/word_list.dart';
 import 'package:scabbles_word/src/utils/cubit/letters_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class TileDataSource {
   Future<List<Tile>> tileRackGenerate();
@@ -20,6 +21,7 @@ class TileDataSourceImpl implements TileDataSource {
         if (letter != null) {
           newRack.add(
             Tile(
+              id: Uuid().v4(),
               kana: letter,
               romaji: letters[letter]![0],
               points: letters[letter]![3].toString(),
@@ -57,7 +59,20 @@ class TileDataSourceImpl implements TileDataSource {
 
   @override
   Future<List<Tile>> removeTile(Tile tile) async {
-    newRack.remove(tile);
+    // newRack.remove(tile);
+    newRack.removeWhere((t) => t.id == tile.id);
+
     return newRack;
   }
+
+  // @override
+  // Future<List<Tile>> removeTile(Tile tile) async {
+  //   final index = newRack.indexWhere(
+  //     (t) => t.kana == tile.kana && t.romaji == tile.romaji,
+  //   );
+  //   if (index != -1) {
+  //     newRack.removeAt(index);
+  //   }
+  //   return newRack;
+  // }
 }

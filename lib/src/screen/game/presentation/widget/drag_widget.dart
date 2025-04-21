@@ -78,14 +78,13 @@ Widget dragWidget(
     ),
   );
 }
-
-// Replace with your actual widget
+//* Demo widget
 Widget dragWidget1(
-    String text,
-    double scale, {
-      double fontsize = 16,
-      bool showPoint = true,
-    }) {
+  String text,
+  double scale, {
+  double fontsize = 16,
+  bool showPoint = true,
+}) {
   return Transform.scale(
     scale: scale,
     child: Text(
