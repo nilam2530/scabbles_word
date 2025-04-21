@@ -23,15 +23,23 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
     on<PlaceTile>((event, emit) {
       try {
+        final isFirstTile = placedTiles.isEmpty;
+
+        if (!isFirstTile && !hasAdjacentTile(event.index, _board.tiles)) {
+          emit(BoardError("Tiles must be adjacent to existing ones."));
+          emit(BoardLoadSuccess(_board)); // Restore board after error
+          return;
+        }
+
         final newBoard = placeTileUseCase(_board, event.index, event.tile);
         _board = newBoard;
+
         emit(BoardLoadSuccess(_board));
       } catch (e) {
         emit(BoardError(e.toString()));
-        emit(BoardLoadSuccess(_board)); // return to current board after error
+        emit(BoardLoadSuccess(_board)); // Restore board after error
       }
     });
-
 
     on<HoverTile>((event, emit) {
       emit(BoardLoadSuccess(_board, hoveredIndex: event.index));
@@ -44,11 +52,25 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 
   List<BoardTile> get placedTiles =>
       _board.tiles.where((tile) => tile.value != null).toList();
-  //
-  // void clearPlacedTiles() {
-  //   for (var tile in _board.tiles) {
-  //     tile.value = null;
-  //   }
-  //   add(LoadBoard()); // Reload board with cleared tiles
-  // }
+
+  bool hasAdjacentTile(int index, List<BoardTile> allTiles) {
+    const int gridSize = 15;
+
+    final neighborIndexes = <int>[
+      index - 1, // left
+      index + 1, // right
+      index - gridSize, // up
+      index + gridSize, // down
+    ];
+
+    return neighborIndexes.any((i) {
+      if (i < 0 || i >= allTiles.length) return false;
+
+      final sameRow = (index ~/ gridSize) == (i ~/ gridSize);
+      if ((i == index - 1 || i == index + 1) && !sameRow)
+        return false; // prevent wrap
+
+      return allTiles[i].value != null;
+    });
+  }
 }

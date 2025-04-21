@@ -2,6 +2,8 @@ import 'dart:developer';
 // import 'package:scabbles_word/src/screenns/game/domane/entities/tile_entitie.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_popup/flutter_popup.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scabbles_word/src/screen/game/domane/entities/board_tile_entitie.dart';
 import 'package:scabbles_word/src/screen/game/domane/entities/tile_entitie.dart'
     show Tile;
 import 'package:scabbles_word/src/screen/game/presentation/game_bord/cubit/radom_tile_cubit.dart';
@@ -26,6 +28,25 @@ class DragDropGame extends StatelessWidget {
     final int gridSize = 15;
     final TransformationController transformationController =
         TransformationController();
+    bool hasAdjacentTile(int index, List<BoardTile> tiles) {
+      const gridSize = 15;
+      final neighborIndexes = <int>[
+        index - 1, // left
+        index + 1, // right
+        index - gridSize, // up
+        index + gridSize, // down
+      ];
+
+      return neighborIndexes.any((i) {
+        if (i < 0 || i >= tiles.length) return false;
+
+        final sameRow = (index ~/ gridSize) == (i ~/ gridSize);
+        if ((i == index - 1 || i == index + 1) && !sameRow) return false;
+
+        return tiles[i].value != null;
+      });
+    }
+
     return Stack(
       children: [
         Container(
@@ -43,10 +64,14 @@ class DragDropGame extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.orange,
-            title: Text('Bingo kana',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+            title: Text(
+              'Bingo kana',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             centerTitle: true,
-            actions: [
-            ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -54,6 +79,7 @@ class DragDropGame extends StatelessWidget {
               child: Column(
                 spacing: 10,
                 children: [
+                  SizedBox(height: 10),
                   // Draggable Items
                   BlocBuilder<TileRackCubit, TileRackState>(
                     builder: (context, state) {
@@ -157,14 +183,19 @@ class DragDropGame extends StatelessWidget {
                     },
                   ),
                   // Drop Target Grid
-                  SizedBox(height: 20),
+                  // SizedBox(height: 20),
                   BlocConsumer<BoardBloc, BoardState>(
                     listener: (context, state) {
                       if (state is BoardError) {
-                        // ScaffoldMessenger.of(
-                        //   context,
-                        // ).showSnackBar(SnackBar(content: Text(state.message)));
-                        CustomToast.show(context, message: state.message);
+                        Fluttertoast.showToast(
+                          msg: state.message,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          // backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
                       }
                     },
                     builder: (context, state) {
@@ -216,25 +247,76 @@ class DragDropGame extends StatelessWidget {
                                           UnhoverTile(index),
                                         );
                                       },
+
+                                      // onAcceptWithDetails: (details) {
+                                      //   final tile = details.data;
+
+                                      //   final isFirstMove =
+                                      //       state.board.isFirstMove();
+
+                                      //   if (isFirstMove && index != 112) {
+                                      //     Fluttertoast.showToast(
+                                      //       msg:
+                                      //           'First tile must be placed in the center',
+                                      //       toastLength: Toast.LENGTH_SHORT,
+                                      //       gravity: ToastGravity.CENTER,
+                                      //       timeInSecForIosWeb: 1,
+                                      //       // backgroundColor: Colors.red,
+                                      //       textColor: Colors.white,
+                                      //       fontSize: 16.0,
+                                      //     );
+
+                                      //     return;
+                                      //   }
+
+                                      //   context.read<BoardBloc>().add(
+                                      //     PlaceTile(index: index, tile: tile),
+                                      //   );
+
+                                      //   GetIt.I<TileRackCubit>().onTileRemove(
+                                      //     tile,
+                                      //   );
+                                      // },
                                       onAcceptWithDetails: (details) {
                                         final tile = details.data;
+                                        final board = state.board;
+                                        final isFirstMove = board.isFirstMove();
 
-                                        final isFirstMove =
-                                            state.board.isFirstMove();
-
+                                        // 1. First tile must be placed in the center
                                         if (isFirstMove && index != 112) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
+                                          Fluttertoast.showToast(
+                                            msg:
                                                 'First tile must be placed in the center',
-                                              ),
-                                            ),
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                            timeInSecForIosWeb: 1,
+                                            // backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0,
                                           );
                                           return;
                                         }
 
+                                        // 2. For subsequent moves, tile must be adjacent to existing ones
+                                        if (!isFirstMove &&
+                                            !hasAdjacentTile(
+                                              index,
+                                              board.tiles,
+                                            )) {
+                                          Fluttertoast.showToast(
+                                            msg:
+                                                'Tiles must be adjacent to existing ones',
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                            timeInSecForIosWeb: 1,
+                                            // backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0,
+                                          );
+                                          return;
+                                        }
+
+                                        // If valid, place tile and remove from rack
                                         context.read<BoardBloc>().add(
                                           PlaceTile(index: index, tile: tile),
                                         );
@@ -243,6 +325,7 @@ class DragDropGame extends StatelessWidget {
                                           tile,
                                         );
                                       },
+
                                       builder: (
                                         context,
                                         candidateData,
@@ -261,12 +344,29 @@ class DragDropGame extends StatelessWidget {
                                               //   fit: BoxFit.cover,
                                               //
                                               // ),
+                                              gradient:
+                                                  isHovered
+                                                      ? LinearGradient(
+                                                        colors: [
+                                                          Colors.yellow,
+                                                          Colors.yellow,
+                                                        ],
+                                                        begin:
+                                                            Alignment.topCenter,
+                                                        end:
+                                                            Alignment
+                                                                .bottomCenter,
+                                                      )
+                                                      : LinearGradient(
+                                                        colors: tileColor(tile),
+                                                        begin:
+                                                            Alignment.topCenter,
+                                                        end:
+                                                            Alignment
+                                                                .bottomCenter,
+                                                      ),
                                               borderRadius:
                                                   BorderRadius.circular(5),
-                                              color:
-                                                  isHovered
-                                                      ? Colors.yellow
-                                                      : tileColor(tile),
                                             ),
                                             alignment: Alignment.center,
                                             child:
@@ -321,12 +421,15 @@ class DragDropGame extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child:
-                  AnimatedButton(
+                  child: AnimatedButton(
                     height: 50,
                     width: 100,
                     text: 'SUBMIT',
-                    textStyle: TextStyle(color: Colors.orange,fontSize: 18,fontWeight:  FontWeight.bold),
+                    textStyle: TextStyle(
+                      color: Colors.orange,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                     isReverse: true,
                     selectedTextColor: Colors.orange,
                     transitionType: TransitionType.CENTER_ROUNDER,
@@ -356,8 +459,8 @@ class DragDropGame extends StatelessWidget {
 
                       while (tileRackCubit.state is TileRackLoaded &&
                           (tileRackCubit.state as TileRackLoaded)
-                              .tileRack
-                              .length <
+                                  .tileRack
+                                  .length <
                               7 &&
                           lettersCubit.totalTilesLeft > 0) {
                         await tileRackCubit.refillUntilSeven(
@@ -372,7 +475,6 @@ class DragDropGame extends StatelessWidget {
                       // Navigator.push(...)
                     },
                   ),
-
                 ),
                 SizedBox(width: 16),
                 SizedBox(
@@ -386,7 +488,7 @@ class DragDropGame extends StatelessWidget {
                       elevation: 0,
                     ),
                     onPressed: () {
-                      tileBag(context: context,letters: letters);
+                      tileBag(context: context, letters: letters);
                     },
                     child: Stack(
                       alignment: Alignment.center,
@@ -400,19 +502,25 @@ class DragDropGame extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                       Positioned(
-                         top: 25,
-                           child:
-                       Text('${context.watch<LettersCubit>().totalTilesLeft}',style: TextStyle(color: Colors.orange,fontWeight:  FontWeight.bold,fontSize: 18),))
-
-
-                                            ],
+                        Positioned(
+                          top: 25,
+                          child: Text(
+                            '${context.watch<LettersCubit>().totalTilesLeft}',
+                            style: TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-          ),        ),
+          ),
+        ),
       ],
     );
   }

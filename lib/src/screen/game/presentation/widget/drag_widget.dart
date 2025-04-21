@@ -15,8 +15,11 @@ Widget dragWidget(
       height: 50,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage("assets/images/square.png")),
-        color: Color(0xFF0FFD54F).withOpacity(0.2),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xfffd6900), Color(0xffffcc00)],
+        ),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Stack(
@@ -69,7 +72,10 @@ Widget dragWidget(
                   padding: const EdgeInsets.all(6.0),
                   child:
                       tileData.diacritics.isNotEmpty
-                          ? CircleAvatar(backgroundColor: Colors.red, radius: 3)
+                          ? CircleAvatar(
+                            backgroundColor: Colors.yellow,
+                            radius: 3,
+                          )
                           : SizedBox.shrink(),
                 ),
               ),
@@ -78,6 +84,7 @@ Widget dragWidget(
     ),
   );
 }
+
 //* Demo widget
 Widget dragWidget1(
   String text,
