@@ -41,4 +41,14 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
       emit(BoardLoadSuccess(_board)); // clears hoveredIndex
     });
   }
+
+  List<BoardTile> get placedTiles =>
+      _board.tiles.where((tile) => tile.value != null).toList();
+  //
+  // void clearPlacedTiles() {
+  //   for (var tile in _board.tiles) {
+  //     tile.value = null;
+  //   }
+  //   add(LoadBoard()); // Reload board with cleared tiles
+  // }
 }

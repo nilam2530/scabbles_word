@@ -1,8 +1,6 @@
 import 'dart:developer';
-// import 'package:scabbles_word/src/screenns/game/domane/entities/tile_entitie.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
-import 'package:scabbles_word/src/screen/game/domane/entities/tile_entitie.dart'
-    show Tile;
+import 'package:scabbles_word/src/screen/game/domane/entities/tile_entitie.dart' show Tile;
 import 'package:scabbles_word/src/screen/game/presentation/game_bord/cubit/radom_tile_cubit.dart';
 import 'package:scabbles_word/src/screen/game/presentation/game_bord/bloc/game_bloc.dart';
 import 'package:scabbles_word/src/screen/game/presentation/game_bord/bloc/game_event.dart';
@@ -27,15 +25,11 @@ class DragDropGame extends StatelessWidget {
     return Stack(
       children: [
         Container(
-
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.85), // subtle white overlay
-
             image: DecorationImage(image: AssetImage("assets/images/back.jpg",),
                 fit: BoxFit.cover,
-             // opacity: 0.4,
             ),
-
           ),
         ),
         Container(color: Colors.black.withOpacity(0.3)), // Dark overlay
@@ -218,7 +212,7 @@ class DragDropGame extends StatelessWidget {
                               // ScaffoldMessenger.of(
                               //   context,
                               // ).showSnackBar(SnackBar(content: Text(state.message)));
-                              CustomToast.show(context, message: state.message);
+                             CustomToast.show(context, message: state.message);
                             }
                           },
                           builder: (context, state) {
@@ -351,7 +345,35 @@ class DragDropGame extends StatelessWidget {
                           backgroundColor: Colors.black,
                           borderColor: Colors.yellow,
                           borderRadius: 50,
-                          borderWidth: 2, onPress: () {  },
+                          borderWidth: 2,
+                            onPress: () async {
+                              final boardBloc = context.read<BoardBloc>();
+                              final placedTiles = boardBloc.placedTiles;
+
+                              if (placedTiles.isEmpty) {
+                                CustomToast.show(context, message: "No tiles placed.");
+                                return;
+                              }
+
+                              debugPrint("Words placed: ${placedTiles.map((e) => e.value?.kana).join()}");
+
+                              // Clear placed tiles on board
+                            //  boardBloc.clearPlacedTiles();
+
+                              // Refill logic
+                              final tileRackCubit = context.read<TileRackCubit>();
+                              final lettersCubit = context.read<LettersCubit>();
+
+                              while (tileRackCubit.state is TileRackLoaded &&
+                                  (tileRackCubit.state as TileRackLoaded).tileRack.length < 7 &&
+                                  lettersCubit.totalTilesLeft > 0) {
+                                await tileRackCubit.refillUntilSeven(context.read<LettersCubit>());
+                                await Future.delayed(Duration(milliseconds: 300)); // optional delay
+                              }
+
+                              // Optional: Navigate somewhere
+                              // Navigator.push(...)
+                            }
                         ),
                       ],
                     ),

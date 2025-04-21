@@ -3,7 +3,7 @@ import 'package:scabbles_word/src/screen/game/domane/entities/tile_entitie.dart'
 
 class BoardTile {
   final int index;
-  final Tile? value; 
+  late final Tile? value;
   final bool isCenter;
   final bool isOccupied;
 
