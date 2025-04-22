@@ -9,7 +9,6 @@ void tileBag({context, letters}) {
       // Total remaining tiles
 
       return Container(
-
         width: double.maxFinite,
         height: MediaQuery.of(context).size.height * 0.8,
         child: Padding(
@@ -25,11 +24,13 @@ void tileBag({context, letters}) {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.60), // subtle white overlay
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/back.jpg"),
-                      fit: BoxFit.cover,
-                    ),
+                    // color: Colors.white.withOpacity(
+                    //   0.60,
+                    // ), // subtle white overlay
+                    // image: DecorationImage(
+                    //   image: AssetImage("assets/images/back.jpg"),
+                    //   fit: BoxFit.cover,
+                    // ),
                   ),
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
